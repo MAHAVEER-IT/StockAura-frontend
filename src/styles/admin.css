@@ -1,3 +1,10 @@
+/* ============================================================
+   MERGED DASHBOARD STYLESHEET
+   Combines styles from both source files, keeping the most
+   complete and refined version of each rule.
+   ============================================================ */
+
+/* ── Shell & Layout ── */
 .dashboard-shell {
   min-height: 100svh;
   background:
@@ -42,11 +49,14 @@
   align-items: start;
 }
 
+/* ── Card Panels (all form & list containers) ── */
 .employee-form,
 .employee-list,
 .product-form,
 .product-list,
 .category-form,
+.supplier-form,
+.supplier-list,
 .category-list {
   border: 1px solid var(--line);
   border-radius: 1.1rem;
@@ -57,15 +67,13 @@
 
 .employee-form,
 .product-form,
-.category-form {
+.category-form,
+.supplier-form {
   display: grid;
   gap: 0.45rem;
 }
 
-.employee-grid {
-  grid-template-columns: 1fr;
-}
-
+/* ── Option Card (collapsible panel) ── */
 .option-card {
   border: 1px solid var(--line);
   border-radius: 1.1rem;
@@ -102,17 +110,9 @@
   margin-top: 0.7rem;
 }
 
-.employee-option-content {
-  display: grid;
-  gap: 1rem;
-}
-
+.employee-option-content,
 .category-option-content,
-.product-option-content {
-  display: grid;
-  gap: 1rem;
-}
-
+.product-option-content,
 .supplier-option-content {
   display: grid;
   gap: 1rem;
@@ -122,6 +122,11 @@
   margin: 0.8rem 0 0;
   font-size: 0.9rem;
   color: #5b7181;
+}
+
+/* ── Employee ── */
+.employee-grid {
+  grid-template-columns: 1fr;
 }
 
 .employee-form {
@@ -134,17 +139,72 @@
   gap: 0.75rem 0.85rem;
 }
 
+.employee-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.employee-list-wrap {
+  margin-top: 0.4rem;
+  overflow: auto;
+  max-height: min(40vh, 360px);
+  border: 1px solid #e6eef7;
+  border-radius: 0.8rem;
+  padding: 0.65rem;
+}
+
+.employee-list li {
+  border: 1px solid #deebf6;
+  background: #ffffff;
+  border-radius: 0.8rem;
+  padding: 0.62rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.employee-row-actions {
+  flex-shrink: 0;
+}
+
+.employee-email {
+  margin: 0;
+  color: #17384a;
+  font-weight: 700;
+}
+
+.employee-pass {
+  margin: 0.2rem 0 0;
+  color: #4f6474;
+  font-size: 0.9rem;
+}
+
+.employee-role {
+  margin: 0.2rem 0 0;
+  color: #2d5f3a;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+/* ── Shared Section Headings ── */
 .employee-form h3,
 .employee-list h3,
 .product-form h3,
 .product-list h3,
 .category-form h3,
+.supplier-form h3,
+.supplier-list h3,
 .category-list h3 {
   margin: 0 0 0.35rem;
   font-family: 'Space Grotesk', 'Tahoma', sans-serif;
   font-size: 1.2rem;
 }
 
+/* ── Shared Form Labels ── */
 .employee-form label,
 .product-form label,
 .category-form label,
@@ -154,6 +214,7 @@
   color: #395162;
 }
 
+/* ── Shared Form Inputs ── */
 .employee-form input,
 .employee-form select,
 .product-form input,
@@ -175,6 +236,7 @@
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
+/* ── Shared Focus Styles ── */
 .employee-form input:focus,
 .employee-form select:focus,
 .product-form input:focus,
@@ -191,16 +253,15 @@
   box-shadow: 0 0 0 4px rgba(139, 195, 234, 0.2);
 }
 
+/* ── Shared Primary Button Spacing ── */
 .employee-form .primary-btn,
 .product-form .primary-btn,
-.category-form .primary-btn {
-  margin-top: 0.5rem;
-}
-
+.category-form .primary-btn,
 .supplier-form .primary-btn {
   margin-top: 0.5rem;
 }
 
+/* ── Utility ── */
 .file-note {
   margin: 0;
   font-size: 0.83rem;
@@ -218,6 +279,21 @@
   font-size: 0.9rem;
 }
 
+.empty-state {
+  margin: 0.3rem 0 0;
+  color: #5d7181;
+}
+
+.field-group {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field-group-wide {
+  grid-column: span 2;
+}
+
+/* ── Product ── */
 .product-grid {
   margin-top: 1rem;
   grid-template-columns: 1fr;
@@ -231,108 +307,6 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem 0.85rem;
-}
-
-.category-grid {
-  margin-top: 1rem;
-  grid-template-columns: 1fr;
-}
-
-.category-form {
-  gap: 0.75rem;
-}
-
-.category-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem 0.85rem;
-}
-
-.supplier-grid {
-  margin-top: 1rem;
-  grid-template-columns: 1fr;
-}
-
-.supplier-management {
-  display: grid;
-  gap: 1rem;
-}
-
-.supplier-form {
-  gap: 0.75rem;
-}
-
-.supplier-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem 0.85rem;
-}
-
-.supplier-list {
-  border: 1px solid var(--line);
-  border-radius: 1.1rem;
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.93), rgba(248, 252, 255, 0.86));
-  box-shadow: 0 14px 30px rgba(29, 52, 79, 0.08);
-  padding: 1rem;
-}
-
-.supplier-list h3,
-.supplier-form h3 {
-  margin: 0 0 0.35rem;
-  font-family: 'Space Grotesk', 'Tahoma', sans-serif;
-  font-size: 1.2rem;
-}
-
-.supplier-list-wrap {
-  margin-top: 0.45rem;
-  overflow: auto;
-  max-height: min(62vh, 420px);
-  border: 1px solid #e6eef7;
-  border-radius: 0.8rem;
-  padding: 0.6rem;
-}
-
-.supplier-item {
-  border: 1px solid #deebf6;
-  background: #ffffff;
-  border-radius: 0.8rem;
-  padding: 0.62rem 0.75rem;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.supplier-info h4 {
-  margin: 0 0 0.25rem;
-  color: #17384a;
-  font-weight: 700;
-}
-
-.supplier-info p {
-  margin: 0;
-  color: #4f6474;
-  font-size: 0.9rem;
-}
-
-.action-btn {
-  border: 1px solid #d6e4f2;
-  background: #ffffff;
-  color: #244558;
-  padding: 0.38rem 0.58rem;
-  border-radius: 0.55rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.field-group {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.field-group-wide {
-  grid-column: span 2;
 }
 
 .product-form-actions {
@@ -414,6 +388,14 @@
   color: #3d5568;
 }
 
+.product-thumb {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 1px solid #deebf6;
+}
+
 .price-header-wrap {
   display: inline-flex;
   align-items: center;
@@ -445,6 +427,22 @@
   border-color: #8bc3ea;
   color: #1c4e66;
   background: #e9f5ff;
+}
+
+/* ── Category ── */
+.category-grid {
+  margin-top: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.category-form {
+  gap: 0.75rem;
+}
+
+.category-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 0.85rem;
 }
 
 .category-table-wrap {
@@ -492,6 +490,61 @@
   font-size: 0.9rem;
 }
 
+/* ── Supplier ── */
+.supplier-grid {
+  margin-top: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.supplier-management {
+  display: grid;
+  gap: 1rem;
+}
+
+.supplier-form {
+  gap: 0.75rem;
+}
+
+.supplier-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 0.85rem;
+}
+
+.supplier-list-wrap {
+  margin-top: 0.45rem;
+  overflow: auto;
+  max-height: min(62vh, 420px);
+  border: 1px solid #e6eef7;
+  border-radius: 0.8rem;
+  padding: 0.6rem;
+}
+
+.supplier-item {
+  border: 1px solid #deebf6;
+  background: #ffffff;
+  border-radius: 0.8rem;
+  padding: 0.62rem 0.75rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.supplier-info h4 {
+  margin: 0 0 0.25rem;
+  color: #17384a;
+  font-weight: 700;
+}
+
+.supplier-info p {
+  margin: 0;
+  color: #4f6474;
+  font-size: 0.9rem;
+}
+
+/* ── Inline Editing ── */
 .editing-row {
   background-color: #f0f7ff;
 }
@@ -501,17 +554,15 @@
   border-color: #8bc3ea;
 }
 
-.product-thumb {
-  width: 42px;
-  height: 42px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-  border: 1px solid #deebf6;
-}
-
-.row-actions {
-  display: flex;
-  gap: 0.45rem;
+/* ── Buttons ── */
+.action-btn {
+  border: 1px solid #d6e4f2;
+  background: #ffffff;
+  color: #244558;
+  padding: 0.38rem 0.58rem;
+  border-radius: 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .table-btn {
@@ -536,62 +587,12 @@
   background: #f0f7ed;
 }
 
-.employee-list ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.55rem;
-}
-
-.employee-list-wrap {
-  margin-top: 0.4rem;
-  overflow: auto;
-  max-height: min(40vh, 360px);
-  border: 1px solid #e6eef7;
-  border-radius: 0.8rem;
-  padding: 0.65rem;
-}
-
-.employee-list li {
-  border: 1px solid #deebf6;
-  background: #ffffff;
-  border-radius: 0.8rem;
-  padding: 0.62rem 0.75rem;
+.row-actions {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.45rem;
 }
 
-.employee-row-actions {
-  flex-shrink: 0;
-}
-
-.employee-email {
-  margin: 0;
-  color: #17384a;
-  font-weight: 700;
-}
-
-.employee-pass {
-  margin: 0.2rem 0 0;
-  color: #4f6474;
-  font-size: 0.9rem;
-}
-
-.employee-role {
-  margin: 0.2rem 0 0;
-  color: #2d5f3a;
-  font-size: 0.84rem;
-  font-weight: 700;
-}
-
-.empty-state {
-  margin: 0.3rem 0 0;
-  color: #5d7181;
-}
-
+/* ── Responsive ── */
 @media (max-width: 900px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
