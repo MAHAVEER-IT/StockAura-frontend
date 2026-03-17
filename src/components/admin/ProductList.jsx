@@ -19,6 +19,7 @@ export default function ProductList({ products, onEdit, onDelete }) {
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
+                <th>Quantity</th>
                 <th>Barcode</th>
                 <th>Expiry</th>
                 <th>Actions</th>
@@ -33,6 +34,7 @@ export default function ProductList({ products, onEdit, onDelete }) {
                   <td>{product.name}</td>
                   <td>{product.category?.name || 'N/A'}</td>
                   <td>{money.format(product.price)}</td>
+                  <td>{product.quantity}</td>
                   <td>{product.barcode}</td>
                   <td>{product.expiry}</td>
                   <td>

@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react'
 
 const defaultProduct = {
   name: '',
+  description: '',
   price: '',
   barcode: '',
-  expiry: '',
+  quantity: '100',
+  lowStockThreshold: '20',
+  expiryDate: '',
   imageFile: null,
   imageName: '',
   category: '',
@@ -18,9 +21,12 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
     if (editingProduct) {
       setForm({
         name: editingProduct.name,
+        description: editingProduct.description || '',
         price: String(editingProduct.price),
         barcode: editingProduct.barcode,
-        expiry: editingProduct.expiry,
+        quantity: String(editingProduct.quantity || 100),
+        lowStockThreshold: String(editingProduct.lowStockThreshold || 20),
+        expiryDate: editingProduct.expiryDate || editingProduct.expiry || '',
         imageFile: null,
         imageName: '',
         category: editingProduct.category?._id || editingProduct.category || '',
@@ -98,6 +104,18 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
           />
         </div>
 
+        <div className="field-group field-group-wide">
+          <label htmlFor="product-description">Description</label>
+          <textarea
+            id="product-description"
+            name="description"
+            placeholder="Enter product description (optional)"
+            value={form.description}
+            onChange={handleChange}
+            rows="3"
+          />
+        </div>
+
         <div className="field-group">
           <label htmlFor="product-price">Price</label>
           <input
@@ -110,6 +128,33 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
             value={form.price}
             onChange={handleChange}
             required
+          />
+        </div>
+
+        <div className="field-group">
+          <label htmlFor="product-quantity">Initial Quantity</label>
+          <input
+            id="product-quantity"
+            name="quantity"
+            type="number"
+            min="0"
+            placeholder="100"
+            value={form.quantity}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="field-group">
+          <label htmlFor="product-lowStockThreshold">Low Stock Threshold</label>
+          <input
+            id="product-lowStockThreshold"
+            name="lowStockThreshold"
+            type="number"
+            min="1"
+            placeholder="20"
+            value={form.lowStockThreshold}
+            onChange={handleChange}
           />
         </div>
 
@@ -127,12 +172,12 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         </div>
 
         <div className="field-group">
-          <label htmlFor="product-expiry">Expiry Date</label>
+          <label htmlFor="product-expiryDate">Expiry Date</label>
           <input
-            id="product-expiry"
-            name="expiry"
+            id="product-expiryDate"
+            name="expiryDate"
             type="date"
-            value={form.expiry}
+            value={form.expiryDate}
             onChange={handleChange}
             required
           />

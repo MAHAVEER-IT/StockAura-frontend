@@ -16,6 +16,7 @@ import {
   getCategories,
   updateCategory,
 } from '../services/api'
+import SupplierManagement from '../components/admin/SupplierManagement'
 
 export default function AdminDashboard({
   adminEmail,
@@ -27,6 +28,7 @@ export default function AdminDashboard({
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [suppliers, setSuppliers] = useState([])
+  const [supplierError, setSupplierError] = useState('')
   const [editingProduct, setEditingProduct] = useState(null)
   const [dashboardError, setDashboardError] = useState('')
   const [categoryError, setCategoryError] = useState('')
@@ -34,11 +36,16 @@ export default function AdminDashboard({
   const mapProduct = (product) => ({
     id: product._id,
     name: product.name,
+    description: product.description || '',
     price: product.price,
     barcode: product.barcode,
+    quantity: product.quantity || 0,
+    lowStockThreshold: product.lowStockThreshold || 20,
     expiry: product.expiryDate ? String(product.expiryDate).slice(0, 10) : '',
     image: product.imageUrl,
+    imageUrl: product.imageUrl,
     category: product.category,
+    supplier: product.supplier,
   })
 
   const loadProducts = async () => {
@@ -77,8 +84,41 @@ export default function AdminDashboard({
     try {
       const response = await getSuppliers(authToken)
       setSuppliers(response.suppliers || [])
+      setSupplierError('')
     } catch (error) {
-      console.error('Failed to load suppliers:', error.message)
+      setSupplierError(error.message)
+    }
+  }
+
+  const handleCreateSupplier = async (payload) => {
+    try {
+      const response = await createSupplier(authToken, payload)
+      setSuppliers((prev) => [response.supplier, ...prev])
+      setSupplierError('')
+    } catch (error) {
+      setSupplierError(error.message)
+    }
+  }
+
+  const handleEditSupplier = async (id, payload) => {
+    try {
+      const response = await updateSupplier(authToken, id, payload)
+      setSuppliers((prev) =>
+        prev.map((sup) => (sup._id === id ? response.supplier : sup))
+      )
+      setSupplierError('')
+    } catch (error) {
+      setSupplierError(error.message)
+    }
+  }
+
+  const handleDeleteSupplier = async (id) => {
+    try {
+      await deleteSupplier(authToken, id)
+      setSuppliers((prev) => prev.filter((sup) => sup._id !== id))
+      setSupplierError('')
+    } catch (error) {
+      setSupplierError(error.message)
     }
   }
 
@@ -91,13 +131,15 @@ export default function AdminDashboard({
   const handleSaveProduct = async (payload) => {
     const normalized = {
       name: payload.name.trim(),
+      description: payload.description || '',
       price: Number(payload.price),
       barcode: payload.barcode.trim(),
-      expiry: payload.expiry,
+      quantity: payload.quantity || '100',
+      lowStockThreshold: payload.lowStockThreshold || '20',
+      expiryDate: payload.expiryDate,
       imageFile: payload.imageFile,
       category: payload.category,
       supplier: payload.supplier,
-      quantity: payload.quantity || '0',
     }
 
     if (
@@ -105,9 +147,11 @@ export default function AdminDashboard({
       !Number.isFinite(normalized.price) ||
       normalized.price < 0 ||
       !normalized.barcode ||
-      !normalized.expiry ||
-      !normalized.category
+      !normalized.expiryDate ||
+      !normalized.category ||
+      !normalized.supplier
     ) {
+      setDashboardError('Please fill all required fields: name, price, barcode, expiry date, category, supplier.')
       return
     }
 
@@ -118,12 +162,16 @@ export default function AdminDashboard({
 
     const apiPayload = {
       name: normalized.name,
+      description: normalized.description,
       price: normalized.price,
       barcode: normalized.barcode,
-      expiryDate: normalized.expiry,
+      quantity: normalized.quantity,
+      lowStockThreshold: normalized.lowStockThreshold,
+      expiryDate: normalized.expiryDate,
       category: normalized.category,
+      supplier: normalized.supplier,
       image: normalized.imageFile,
-      imageUrl: editingProduct ? editingProduct.image : '',
+      imageUrl: editingProduct ? editingProduct.imageUrl || editingProduct.image : '',
     }
 
     if (editingProduct) {
@@ -253,6 +301,16 @@ export default function AdminDashboard({
             products={products}
             onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
+          />
+        </section>
+
+        <section className="dashboard-grid supplier-grid">
+          <SupplierManagement
+            suppliers={suppliers}
+            onCreate={handleCreateSupplier}
+            onEdit={handleEditSupplier}
+            onDelete={handleDeleteSupplier}
+            error={supplierError}
           />
         </section>
       </main>
