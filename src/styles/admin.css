@@ -1,4 +1,4 @@
-.dashboard-shell {
+ n .dashboard-shell {
   min-height: 100svh;
   background:
     radial-gradient(460px 240px at 10% 4%, rgba(203, 242, 216, 0.82), transparent 62%),
@@ -47,7 +47,9 @@
 .product-form,
 .product-list,
 .category-form,
-.category-list {
+.supplier-form,
+.category-list
+ {
   border: 1px solid var(--line);
   border-radius: 1.1rem;
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.93), rgba(248, 252, 255, 0.86));
@@ -57,7 +59,8 @@
 
 .employee-form,
 .product-form,
-.category-form {
+.category-form,
+.supplier-form {
   display: grid;
   gap: 0.45rem;
 }
@@ -81,6 +84,7 @@
 .product-form h3,
 .product-list h3,
 .category-form h3,
+.supplier-form h3,
 .category-list h3 {
   margin: 0 0 0.35rem;
   font-family: 'Space Grotesk', 'Tahoma', sans-serif;
@@ -89,7 +93,8 @@
 
 .employee-form label,
 .product-form label,
-.category-form label {
+.category-form label,
+.supplier-form label {
   font-size: 0.86rem;
   font-weight: 600;
   color: #395162;
@@ -101,7 +106,10 @@
 .product-form select,
 .category-form input,
 .category-form select,
-.category-form textarea {
+.supplier-form input,
+.supplier-form textarea,
+.category-form textarea
+.supplier-management {
   width: 100%;
   border: 1px solid #d9e4ef;
   border-radius: 0.75rem;
@@ -118,6 +126,7 @@
 .product-form select:focus,
 .category-form input:focus,
 .category-form select:focus,
+.supplier-form,
 .category-form textarea:focus {
   outline: 0;
   border-color: #8bc3ea;
@@ -126,7 +135,8 @@
 
 .employee-form .primary-btn,
 .product-form .primary-btn,
-.category-form .primary-btn {
+.category-form .primary-btn,
+.supplier-form .primary-btn{
   margin-top: 0.5rem;
 }
 
@@ -193,8 +203,16 @@
 }
 
 .supplier-list {
+  overflow: hidden;
+}
+
+.supplier-list-wrap {
+  margin-top: 0.4rem;
   overflow: auto;
   max-height: min(62vh, 560px);
+  border: 1px solid #e6eef7;
+  border-radius: 0.8rem;
+  padding: 0.65rem;
 }
 
 .supplier-item {
@@ -216,7 +234,7 @@
 }
 
 .supplier-info p {
-  margin: 0;
+  margin: 0 0.15rem 0 0;
   color: #4f6474;
   font-size: 0.9rem;
 }
