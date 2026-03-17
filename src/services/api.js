@@ -64,8 +64,45 @@ export function getProducts(token) {
   })
 }
 
+export function getProductByBarcode(token, barcode) {
+  return request(`/products/barcode/${encodeURIComponent(barcode)}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
 export function getSuppliers(token) {
   return request('/suppliers', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export function createSupplier(token, payload) {
+  return request('/suppliers', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateSupplier(token, id, payload) {
+  return request(`/suppliers/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteSupplier(token, id) {
+  return request(`/suppliers/${id}`, {
+    method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -77,9 +114,11 @@ export function createProduct(token, payload) {
   formData.append('name', payload.name)
   formData.append('description', payload.description || '')
   formData.append('price', String(payload.price))
-  formData.append('barcode', payload.barcode)
-formData.append('quantity', payload.quantity || '100')
-formData.append('lowStockThreshold', payload.lowStockThreshold || '20')
+  if (payload.barcode) {
+    formData.append('barcode', payload.barcode)
+  }
+  formData.append('quantity', payload.quantity || '100')
+  formData.append('lowStockThreshold', payload.lowStockThreshold || '20')
   formData.append('expiryDate', payload.expiryDate)
   formData.append('category', payload.category)
   formData.append('supplier', payload.supplier)
@@ -101,7 +140,9 @@ export function updateProduct(token, id, payload) {
   formData.append('name', payload.name)
   formData.append('description', payload.description || '')
   formData.append('price', String(payload.price))
-  formData.append('barcode', payload.barcode)
+  if (payload.barcode) {
+    formData.append('barcode', payload.barcode)
+  }
   formData.append('quantity', payload.quantity || '100')
   formData.append('lowStockThreshold', payload.lowStockThreshold || '20')
   formData.append('expiryDate', payload.expiryDate)
