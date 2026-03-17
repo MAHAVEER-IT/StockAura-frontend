@@ -98,7 +98,6 @@ export function deleteProduct(token, id) {
     },
   })
 }
-<<<<<<< HEAD
 
 export function getCategories(token) {
   return request('/categories', {
@@ -136,5 +135,3 @@ export function deleteCategory(token, id) {
     },
   })
 }
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
