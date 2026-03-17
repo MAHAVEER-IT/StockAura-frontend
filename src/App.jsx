@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { useState, useEffect } from 'react'
-=======
-import { useState } from 'react'
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
 import './App.css'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
@@ -20,7 +16,6 @@ function App() {
   const [activeAdmin, setActiveAdmin] = useState('')
   const [authToken, setAuthToken] = useState('')
   const [employees, setEmployees] = useState([])
-<<<<<<< HEAD
   const [isLoading, setIsLoading] = useState(true)
 
   // Load auth state from localStorage on mount
@@ -40,8 +35,6 @@ function App() {
     }
     setIsLoading(false)
   }, [])
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
 
   const toUiRole = (apiRole) => (apiRole === 'admin' ? 'ADMIN' : 'EMPLOYEE')
 
@@ -113,12 +106,9 @@ function App() {
       if (isAdminLogin) {
         setAuthToken(response.token)
         setActiveAdmin(response.user.email)
-<<<<<<< HEAD
         // Save to localStorage for persistence
         localStorage.setItem('authToken', response.token)
         localStorage.setItem('activeAdmin', response.user.email)
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
         await loadUsers(response.token)
         setAuthError('')
         setCurrentPage('admin-dashboard')
@@ -147,7 +137,6 @@ function App() {
     setAuthToken('')
     setEmployees([])
     setAuthError('')
-<<<<<<< HEAD
     // Clear localStorage on logout
     localStorage.removeItem('authToken')
     localStorage.removeItem('activeAdmin')
@@ -155,8 +144,6 @@ function App() {
 
   if (isLoading) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
   }
 
   if (currentPage === 'admin-dashboard') {
