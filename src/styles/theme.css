@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+  --page-bg: #fffdf7;
+  --ink: #18232f;
+  --muted: #5e6977;
+  --line: #e5e9ef;
+  --mint: #cbf2d8;
+  --sky: #d9ecff;
+  --peach: #ffe2c8;
+  --sun: #ffcd58;
+  --primary: #0f766e;
+  --primary-ink: #f7fffe;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  border: 0;
+  border-radius: 0.95rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.75rem 1.1rem;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+.primary-btn {
+  background: var(--primary);
+  color: var(--primary-ink);
+  box-shadow: 0 10px 24px rgba(15, 118, 110, 0.25);
+}
+
+.secondary-btn,
+.ghost-btn {
+  color: #20515b;
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.brand-orb {
+  width: 1.35rem;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: conic-gradient(from 210deg, #22c55e, #14b8a6, #84cc16, #22c55e);
+  box-shadow: 0 0 0 4px rgba(203, 242, 216, 0.55);
+}
+
+.brand-name {
+  font-family: 'Space Grotesk', 'Tahoma', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.hero-kicker {
+  display: inline-block;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #086b63;
+  background: linear-gradient(90deg, var(--mint), var(--sky));
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatImage {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
