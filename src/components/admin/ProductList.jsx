@@ -31,7 +31,11 @@ export default function ProductList({ products, onEdit, onDelete }) {
                     <img className="product-thumb" src={product.image} alt={product.name} />
                   </td>
                   <td>{product.name}</td>
+<<<<<<< HEAD
                   <td>{product.category?.name || 'N/A'}</td>
+=======
+                  <td>{product.category}</td>
+>>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
                   <td>{money.format(product.price)}</td>
                   <td>{product.barcode}</td>
                   <td>{product.expiry}</td>

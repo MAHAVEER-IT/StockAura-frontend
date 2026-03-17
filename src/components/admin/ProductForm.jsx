@@ -7,10 +7,25 @@ const defaultProduct = {
   expiry: '',
   imageFile: null,
   imageName: '',
+<<<<<<< HEAD
   category: '',
 }
 
 export default function ProductForm({ editingProduct, onSave, onCancelEdit, categories = [] }) {
+=======
+  category: 'Grocery',
+}
+
+const categoryOptions = [
+  'Grocery',
+  'Beverages',
+  'Dairy',
+  'Snacks',
+  'Household',
+]
+
+export default function ProductForm({ editingProduct, onSave, onCancelEdit }) {
+>>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
   const [form, setForm] = useState(defaultProduct)
 
   useEffect(() => {
@@ -22,7 +37,11 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         expiry: editingProduct.expiry,
         imageFile: null,
         imageName: '',
+<<<<<<< HEAD
         category: editingProduct.category?._id || editingProduct.category || '',
+=======
+        category: editingProduct.category,
+>>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
       })
       return
     }
@@ -30,6 +49,7 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
     setForm(defaultProduct)
   }, [editingProduct])
 
+<<<<<<< HEAD
   // Set default category when categories load
   useEffect(() => {
     if (categories.length > 0 && !form.category && !editingProduct) {
@@ -40,6 +60,8 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
     }
   }, [categories, editingProduct])
 
+=======
+>>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
   const handleChange = (event) => {
     const { name, value } = event.target
     setForm((prev) => ({
@@ -134,12 +156,19 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
             name="category"
             value={form.category}
             onChange={handleChange}
+<<<<<<< HEAD
             required
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
               <option key={category._id} value={category._id}>
                 {category.name}
+=======
+          >
+            {categoryOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+>>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
               </option>
             ))}
           </select>
