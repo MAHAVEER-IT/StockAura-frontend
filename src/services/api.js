@@ -2,13 +2,15 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api
 
 async function request(path, options = {}) {
   const isFormData = options.body instanceof FormData
+  const { headers: customHeaders = {}, ...restOptions } = options
+
   const response = await fetch(`${API_BASE}${path}`, {
     cache: 'no-store',
+    ...restOptions,
     headers: {
       ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
-      ...(options.headers || {}),
+      ...customHeaders,
     },
-    ...options,
   })
 
   const data = await response.json().catch(() => ({}))
@@ -35,6 +37,15 @@ export function registerUser(payload) {
 
 export function getUsers(token) {
   return request('/auth/users', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export function deleteUser(token, id) {
+  return request(`/auth/users/${id}`, {
+    method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
     },
