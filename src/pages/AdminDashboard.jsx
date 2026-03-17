@@ -23,8 +23,12 @@ export default function AdminDashboard({
   authToken,
   employees,
   onCreateEmployee,
+  onDeleteEmployee,
   onLogout,
 }) {
+  const [showStaffFeature, setShowStaffFeature] = useState(true)
+  const [showCategoryFeature, setShowCategoryFeature] = useState(true)
+  const [showProductFeature, setShowProductFeature] = useState(true)
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [suppliers, setSuppliers] = useState([])
@@ -275,18 +279,56 @@ export default function AdminDashboard({
         </section>
 
         <section className="dashboard-grid employee-grid">
-          <CreateEmployeeForm onCreate={onCreateEmployee} />
-          <EmployeeList employees={employees} />
+          <article className="option-card" aria-label="Staff access feature">
+            <div className="option-header">
+              <h2>Staff Access Feature</h2>
+              <button
+                className="option-toggle"
+                type="button"
+                onClick={() => setShowStaffFeature((prev) => !prev)}
+              >
+                {showStaffFeature ? 'Close' : 'Expand'}
+              </button>
+            </div>
+
+            {showStaffFeature ? (
+              <div className="option-content employee-option-content">
+                <CreateEmployeeForm onCreate={onCreateEmployee} />
+                <EmployeeList employees={employees} onDelete={onDeleteEmployee} />
+              </div>
+            ) : (
+              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
+            )}
+          </article>
         </section>
 
         <section className="dashboard-grid category-grid">
-          <CreateCategoryForm onSave={handleCreateCategory} error={categoryError} />
-          <CategoryList
-            categories={categories}
-            onEdit={handleEditCategory}
-            onDelete={handleDeleteCategory}
-            error={categoryError}
-          />
+          <article className="option-card" aria-label="Category management feature">
+            <div className="option-header">
+              <h2>Category Management Feature</h2>
+              <button
+                className="option-toggle"
+                type="button"
+                onClick={() => setShowCategoryFeature((prev) => !prev)}
+              >
+                {showCategoryFeature ? 'Close' : 'Expand'}
+              </button>
+            </div>
+
+            {showCategoryFeature ? (
+              <div className="option-content category-option-content">
+                <CreateCategoryForm onSave={handleCreateCategory} error={categoryError} />
+                <CategoryList
+                  categories={categories}
+                  onEdit={handleEditCategory}
+                  onDelete={handleDeleteCategory}
+                  error={categoryError}
+                />
+              </div>
+            ) : (
+              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
+            )}
+          </article>
         </section>
 
         <section className="dashboard-grid product-grid">
@@ -295,7 +337,6 @@ export default function AdminDashboard({
             onSave={handleSaveProduct}
             onCancelEdit={handleCancelEdit}
             categories={categories}
-            suppliers={suppliers}
           />
           <ProductList
             products={products}

@@ -3,7 +3,7 @@ import './App.css'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import AdminDashboard from './pages/AdminDashboard'
-import { getUsers, loginRequest, registerUser } from './services/api'
+import { deleteUser, getUsers, loginRequest, registerUser } from './services/api'
 
 const ADMIN_CREDENTIALS = {
   email: 'admin@gmail.com',
@@ -77,6 +77,15 @@ function App() {
     } catch (error) {
       setAuthError(error.message)
     }
+  }
+
+  const handleDeleteEmployee = async (employeeId) => {
+    if (!authToken) {
+      return
+    }
+
+    await deleteUser(authToken, employeeId)
+    setEmployees((prev) => prev.filter((employee) => employee.id !== employeeId))
   }
 
   const handleLogin = async ({ email, password, role }) => {
@@ -153,6 +162,7 @@ function App() {
         authToken={authToken}
         employees={employees}
         onCreateEmployee={handleCreateEmployee}
+        onDeleteEmployee={handleDeleteEmployee}
         onLogout={handleLogout}
       />
     )

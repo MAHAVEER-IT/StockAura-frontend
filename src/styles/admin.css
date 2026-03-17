@@ -66,6 +66,59 @@
   grid-template-columns: 1fr;
 }
 
+.option-card {
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.95), rgba(248, 252, 255, 0.88));
+  box-shadow: 0 14px 30px rgba(29, 52, 79, 0.08);
+  padding: 0.85rem;
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.option-header h2 {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Tahoma', sans-serif;
+  font-size: 1.08rem;
+  color: #214354;
+}
+
+.option-toggle {
+  border: 1px solid #d6e4f2;
+  background: #ffffff;
+  color: #1f4558;
+  padding: 0.38rem 0.68rem;
+  border-radius: 0.55rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.option-content {
+  margin-top: 0.7rem;
+}
+
+.employee-option-content {
+  display: grid;
+  gap: 1rem;
+}
+
+.category-option-content,
+.product-option-content {
+  display: grid;
+  gap: 1rem;
+}
+
+.option-collapsed-note {
+  margin: 0.8rem 0 0;
+  font-size: 0.9rem;
+  color: #5b7181;
+}
+
 .employee-form {
   gap: 0.75rem;
 }
@@ -253,6 +306,44 @@
   border-radius: 0.8rem;
 }
 
+.product-filter-bar {
+  margin: 0.6rem 0 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.product-filter-field {
+  min-width: 200px;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.product-filter-field label {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #395162;
+}
+
+.product-filter-field input,
+.product-filter-field select {
+  width: 100%;
+  border: 1px solid #d9e4ef;
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.72rem;
+  font: inherit;
+  color: var(--ink);
+  background: #ffffff;
+}
+
+.product-filter-field input:focus,
+.product-filter-field select:focus {
+  outline: 0;
+  border-color: #8bc3ea;
+  box-shadow: 0 0 0 3px rgba(139, 195, 234, 0.2);
+}
+
 .product-list table {
   width: 100%;
   border-collapse: collapse;
@@ -279,6 +370,39 @@
 
 .product-list td {
   color: #3d5568;
+}
+
+.price-header-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.price-sort-controls {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.sort-arrow {
+  border: 1px solid #d6e4f2;
+  background: #ffffff;
+  color: #4b6578;
+  width: 1.35rem;
+  height: 1.1rem;
+  border-radius: 0.3rem;
+  line-height: 1;
+  font-size: 0.55rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sort-arrow.active {
+  border-color: #8bc3ea;
+  color: #1c4e66;
+  background: #e9f5ff;
 }
 
 .category-table-wrap {
@@ -392,6 +516,14 @@
   background: #ffffff;
   border-radius: 0.8rem;
   padding: 0.62rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.employee-row-actions {
+  flex-shrink: 0;
 }
 
 .employee-email {
