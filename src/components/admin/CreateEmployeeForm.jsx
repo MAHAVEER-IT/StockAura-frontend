@@ -3,7 +3,7 @@ import { useState } from 'react'
 const initialForm = {
   email: '',
   password: '',
-  role: 'EMPLOYEE',
+  role: 'user',
 }
 
 export default function CreateEmployeeForm({ onCreate }) {
@@ -62,8 +62,8 @@ export default function CreateEmployeeForm({ onCreate }) {
             value={form.role}
             onChange={handleChange}
           >
-            <option value="ADMIN">ADMIN</option>
-            <option value="EMPLOYEE">EMPLOYEE</option>
+<option value="admin">Admin</option>
+            <option value="user">User</option>
           </select>
         </div>
       </div>

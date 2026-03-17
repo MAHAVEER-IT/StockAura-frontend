@@ -10,6 +10,7 @@ import {
   deleteProduct,
   getProducts,
   updateProduct,
+  getSuppliers,
   createCategory,
   deleteCategory,
   getCategories,
@@ -25,6 +26,7 @@ export default function AdminDashboard({
 }) {
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
+  const [suppliers, setSuppliers] = useState([])
   const [editingProduct, setEditingProduct] = useState(null)
   const [dashboardError, setDashboardError] = useState('')
   const [categoryError, setCategoryError] = useState('')
@@ -67,9 +69,23 @@ export default function AdminDashboard({
     }
   }
 
+  const loadSuppliers = async () => {
+    if (!authToken) {
+      return
+    }
+
+    try {
+      const response = await getSuppliers(authToken)
+      setSuppliers(response.suppliers || [])
+    } catch (error) {
+      console.error('Failed to load suppliers:', error.message)
+    }
+  }
+
   useEffect(() => {
     loadProducts()
     loadCategories()
+    loadSuppliers()
   }, [authToken])
 
   const handleSaveProduct = async (payload) => {
@@ -80,6 +96,8 @@ export default function AdminDashboard({
       expiry: payload.expiry,
       imageFile: payload.imageFile,
       category: payload.category,
+      supplier: payload.supplier,
+      quantity: payload.quantity || '0',
     }
 
     if (
@@ -229,6 +247,7 @@ export default function AdminDashboard({
             onSave={handleSaveProduct}
             onCancelEdit={handleCancelEdit}
             categories={categories}
+            suppliers={suppliers}
           />
           <ProductList
             products={products}

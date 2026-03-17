@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
 export default function CreateCategoryForm({ onSave, error }) {
-  const [form, setForm] = useState({
+const [form, setForm] = useState({
     name: '',
     description: '',
   })
+  const [localError, setLocalError] = useState('')
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -16,20 +17,25 @@ export default function CreateCategoryForm({ onSave, error }) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (form.name.trim()) {
-      onSave({
-        name: form.name.trim(),
-        description: form.description.trim(),
-      })
-      setForm({ name: '', description: '' })
+    const trimmedName = form.name.trim()
+    setLocalError('')
+    if (!trimmedName) {
+      setLocalError('Category name is required')
+      return
     }
+    onSave({
+      name: trimmedName,
+      description: form.description.trim(),
+    })
+    setForm({ name: '', description: '' })
   }
 
   return (
     <form className="category-form" onSubmit={handleSubmit}>
       <h3>Add New Category</h3>
 
-      {error && <p className="form-error">{error}</p>}
+{error && <p className="form-error">{error}</p>}
+      {localError && <p className="form-error">{localError}</p>}
 
       <div className="category-form-grid">
         <div className="field-group">

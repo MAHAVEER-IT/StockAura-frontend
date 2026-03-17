@@ -8,9 +8,10 @@ const defaultProduct = {
   imageFile: null,
   imageName: '',
   category: '',
+  supplier: '',
 }
 
-export default function ProductForm({ editingProduct, onSave, onCancelEdit, categories = [] }) {
+export default function ProductForm({ editingProduct, onSave, onCancelEdit, categories = [], suppliers = [] }) {
   const [form, setForm] = useState(defaultProduct)
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         imageFile: null,
         imageName: '',
         category: editingProduct.category?._id || editingProduct.category || '',
+        supplier: editingProduct.supplier?._id || editingProduct.supplier || '',
       })
       return
     }
@@ -30,7 +32,7 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
     setForm(defaultProduct)
   }, [editingProduct])
 
-  // Set default category when categories load
+  // Set default category/supplier when lists load
   useEffect(() => {
     if (categories.length > 0 && !form.category && !editingProduct) {
       setForm((prev) => ({
@@ -38,7 +40,16 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         category: categories[0]._id,
       }))
     }
-  }, [categories, editingProduct])
+  }, [categories, editingProduct, form.category])
+
+  useEffect(() => {
+    if (suppliers.length > 0 && !form.supplier && !editingProduct) {
+      setForm((prev) => ({
+        ...prev,
+        supplier: suppliers[0]._id,
+      }))
+    }
+  }, [suppliers, editingProduct, form.supplier])
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -140,6 +151,24 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
             {categories.map((category) => (
               <option key={category._id} value={category._id}>
                 {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field-group">
+          <label htmlFor="product-supplier">Supplier</label>
+          <select
+            id="product-supplier"
+            name="supplier"
+            value={form.supplier}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select a supplier</option>
+            {suppliers.map((supplier) => (
+              <option key={supplier._id} value={supplier._id}>
+                {supplier.name}
               </option>
             ))}
           </select>

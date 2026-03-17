@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api'
 
 async function request(path, options = {}) {
   const isFormData = options.body instanceof FormData
@@ -27,9 +27,13 @@ export function loginRequest(payload) {
 }
 
 export function registerUser(payload) {
+  const mappedPayload = {
+    ...payload,
+    role: payload.role === 'ADMIN' ? 'admin' : 'user'
+  }
   return request('/auth/register', {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(mappedPayload),
   })
 }
 
@@ -49,13 +53,23 @@ export function getProducts(token) {
   })
 }
 
+export function getSuppliers(token) {
+  return request('/suppliers', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
 export function createProduct(token, payload) {
   const formData = new FormData()
   formData.append('name', payload.name)
   formData.append('price', String(payload.price))
   formData.append('barcode', payload.barcode)
+  formData.append('quantity', payload.quantity || '0')
   formData.append('expiryDate', payload.expiryDate)
   formData.append('category', payload.category)
+  formData.append('supplier', payload.supplier)
   if (payload.image instanceof File) {
     formData.append('image', payload.image)
   }
@@ -74,8 +88,10 @@ export function updateProduct(token, id, payload) {
   formData.append('name', payload.name)
   formData.append('price', String(payload.price))
   formData.append('barcode', payload.barcode)
+  formData.append('quantity', payload.quantity || product.quantity.toString())
   formData.append('expiryDate', payload.expiryDate)
   formData.append('category', payload.category)
+  formData.append('supplier', payload.supplier)
   formData.append('imageUrl', payload.imageUrl)
   if (payload.image instanceof File) {
     formData.append('image', payload.image)
@@ -108,9 +124,11 @@ export function getCategories(token) {
 }
 
 export function createCategory(token, payload) {
+  console.log('Category payload:', payload)
   return request('/categories', {
     method: 'POST',
     headers: {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
