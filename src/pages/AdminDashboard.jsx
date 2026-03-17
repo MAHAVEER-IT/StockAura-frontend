@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react'
 import CreateEmployeeForm from '../components/admin/CreateEmployeeForm'
 import EmployeeList from '../components/admin/EmployeeList'
-<<<<<<< HEAD
 import CreateCategoryForm from '../components/admin/CreateCategoryForm'
 import CategoryList from '../components/admin/CategoryList'
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
 import ProductForm from '../components/admin/ProductForm'
 import ProductList from '../components/admin/ProductList'
 import {
@@ -13,13 +10,10 @@ import {
   deleteProduct,
   getProducts,
   updateProduct,
-<<<<<<< HEAD
   createCategory,
   deleteCategory,
   getCategories,
   updateCategory,
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
 } from '../services/api'
 
 export default function AdminDashboard({
@@ -29,19 +23,11 @@ export default function AdminDashboard({
   onCreateEmployee,
   onLogout,
 }) {
-<<<<<<< HEAD
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [editingProduct, setEditingProduct] = useState(null)
   const [dashboardError, setDashboardError] = useState('')
   const [categoryError, setCategoryError] = useState('')
-=======
-  const [showStaffFeature, setShowStaffFeature] = useState(true)
-  const [showProductFeature, setShowProductFeature] = useState(true)
-  const [products, setProducts] = useState([])
-  const [editingProduct, setEditingProduct] = useState(null)
-  const [dashboardError, setDashboardError] = useState('')
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
 
   const mapProduct = (product) => ({
     id: product._id,
@@ -67,7 +53,6 @@ export default function AdminDashboard({
     }
   }
 
-<<<<<<< HEAD
   const loadCategories = async () => {
     if (!authToken) {
       return
@@ -85,10 +70,6 @@ export default function AdminDashboard({
   useEffect(() => {
     loadProducts()
     loadCategories()
-=======
-  useEffect(() => {
-    loadProducts()
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
   }, [authToken])
 
   const handleSaveProduct = async (payload) => {
@@ -171,7 +152,6 @@ export default function AdminDashboard({
     setEditingProduct(null)
   }
 
-<<<<<<< HEAD
   const handleCreateCategory = async (payload) => {
     try {
       const response = await createCategory(authToken, payload)
@@ -204,8 +184,6 @@ export default function AdminDashboard({
     }
   }
 
-=======
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
   return (
     <div className="dashboard-shell">
       <header className="top-nav">
@@ -231,7 +209,6 @@ export default function AdminDashboard({
         </section>
 
         <section className="dashboard-grid employee-grid">
-<<<<<<< HEAD
           <CreateEmployeeForm onCreate={onCreateEmployee} />
           <EmployeeList employees={employees} />
         </section>
@@ -258,61 +235,6 @@ export default function AdminDashboard({
             onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
           />
-=======
-          <article className="option-card" aria-label="Staff access feature">
-            <div className="option-header">
-              <h2>Staff Access Feature</h2>
-              <button
-                className="option-toggle"
-                type="button"
-                onClick={() => setShowStaffFeature((prev) => !prev)}
-              >
-                {showStaffFeature ? 'Close' : 'Expand'}
-              </button>
-            </div>
-
-            {showStaffFeature ? (
-              <div className="option-content employee-option-content">
-                <CreateEmployeeForm onCreate={onCreateEmployee} />
-                <EmployeeList employees={employees} />
-              </div>
-            ) : (
-              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
-            )}
-          </article>
-        </section>
-
-        <section className="dashboard-grid product-grid">
-          <article className="option-card" aria-label="Product management feature">
-            <div className="option-header">
-              <h2>Product Management Feature</h2>
-              <button
-                className="option-toggle"
-                type="button"
-                onClick={() => setShowProductFeature((prev) => !prev)}
-              >
-                {showProductFeature ? 'Close' : 'Expand'}
-              </button>
-            </div>
-
-            {showProductFeature ? (
-              <div className="option-content product-option-content">
-                <ProductForm
-                  editingProduct={editingProduct}
-                  onSave={handleSaveProduct}
-                  onCancelEdit={handleCancelEdit}
-                />
-                <ProductList
-                  products={products}
-                  onEdit={handleEditProduct}
-                  onDelete={handleDeleteProduct}
-                />
-              </div>
-            ) : (
-              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
-            )}
-          </article>
->>>>>>> d2c3aef343459005e67fafa492442ee69a1e0e45
         </section>
       </main>
     </div>
