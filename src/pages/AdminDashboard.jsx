@@ -26,9 +26,10 @@ export default function AdminDashboard({
   onDeleteEmployee,
   onLogout,
 }) {
-  const [showStaffFeature, setShowStaffFeature] = useState(true)
-  const [showCategoryFeature, setShowCategoryFeature] = useState(true)
-  const [showProductFeature, setShowProductFeature] = useState(true)
+  const [showStaffFeature, setShowStaffFeature] = useState(false)
+  const [showCategoryFeature, setShowCategoryFeature] = useState(false)
+  const [showProductFeature, setShowProductFeature] = useState(false)
+  const [showSupplierFeature, setShowSupplierFeature] = useState(false)
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [suppliers, setSuppliers] = useState([])
@@ -205,6 +206,7 @@ export default function AdminDashboard({
 
   const handleEditProduct = (product) => {
     setEditingProduct(product)
+    setShowProductFeature(true)
   }
 
   const handleDeleteProduct = async (id) => {
@@ -332,27 +334,66 @@ export default function AdminDashboard({
         </section>
 
         <section className="dashboard-grid product-grid">
-          <ProductForm
-            editingProduct={editingProduct}
-            onSave={handleSaveProduct}
-            onCancelEdit={handleCancelEdit}
-            categories={categories}
-          />
-          <ProductList
-            products={products}
-            onEdit={handleEditProduct}
-            onDelete={handleDeleteProduct}
-          />
+          <article className="option-card" aria-label="Product management feature">
+            <div className="option-header">
+              <h2>Product Management Feature</h2>
+              <button
+                className="option-toggle"
+                type="button"
+                onClick={() => setShowProductFeature((prev) => !prev)}
+              >
+                {showProductFeature ? 'Close' : 'Expand'}
+              </button>
+            </div>
+
+            {showProductFeature ? (
+              <div className="option-content product-option-content">
+                <ProductForm
+                  editingProduct={editingProduct}
+                  onSave={handleSaveProduct}
+                  onCancelEdit={handleCancelEdit}
+                  categories={categories}
+                  suppliers={suppliers}
+                />
+                <ProductList
+                  products={products}
+                  onEdit={handleEditProduct}
+                  onDelete={handleDeleteProduct}
+                />
+              </div>
+            ) : (
+              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
+            )}
+          </article>
         </section>
 
         <section className="dashboard-grid supplier-grid">
-          <SupplierManagement
-            suppliers={suppliers}
-            onCreate={handleCreateSupplier}
-            onEdit={handleEditSupplier}
-            onDelete={handleDeleteSupplier}
-            error={supplierError}
-          />
+          <article className="option-card" aria-label="Supplier management feature">
+            <div className="option-header">
+              <h2>Supplier Management Feature</h2>
+              <button
+                className="option-toggle"
+                type="button"
+                onClick={() => setShowSupplierFeature((prev) => !prev)}
+              >
+                {showSupplierFeature ? 'Close' : 'Expand'}
+              </button>
+            </div>
+
+            {showSupplierFeature ? (
+              <div className="option-content supplier-option-content">
+                <SupplierManagement
+                  suppliers={suppliers}
+                  onCreate={handleCreateSupplier}
+                  onEdit={handleEditSupplier}
+                  onDelete={handleDeleteSupplier}
+                  error={supplierError}
+                />
+              </div>
+            ) : (
+              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
+            )}
+          </article>
         </section>
       </main>
     </div>

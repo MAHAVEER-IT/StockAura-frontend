@@ -38,7 +38,7 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
     setForm(defaultProduct)
   }, [editingProduct])
 
-  // Set default category/supplier when lists load
+
   useEffect(() => {
     if (categories.length > 0 && !form.category && !editingProduct) {
       setForm((prev) => ({

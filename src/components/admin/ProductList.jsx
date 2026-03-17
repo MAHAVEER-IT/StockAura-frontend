@@ -123,7 +123,30 @@ export default function ProductList({ products, onEdit, onDelete }) {
                 <th>Image</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Price</th>
+                <th>
+                  <div className="price-header-wrap">
+                    <span>Price</span>
+                    <div className="price-sort-controls" aria-label="Sort by price">
+                      <button
+                        className={`sort-arrow ${priceSortOrder === 'asc' ? 'active' : ''}`}
+                        type="button"
+                        onClick={() => setPriceSortOrder('asc')}
+                        aria-label="Sort price ascending"
+                      >
+                        ▲
+                      </button>
+                      <button
+                        className={`sort-arrow ${priceSortOrder === 'desc' ? 'active' : ''}`}
+                        type="button"
+                        onClick={() => setPriceSortOrder('desc')}
+                        aria-label="Sort price descending"
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  </div>
+                </th>
+                <th>Quantity</th>
                 <th>Barcode</th>
                 <th>
                   <div className="price-header-wrap">
