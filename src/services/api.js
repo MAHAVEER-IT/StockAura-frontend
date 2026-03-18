@@ -244,15 +244,6 @@ export function listRestockRequests(token) {
   })
 }
 
-export function receiveRestockRequest(token, id, payload) {
-  return request(`/restock-requests/${id}/receive`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(payload || {}),
-  })
-}
 
 export function updateStock(token, id, payload) {
   return request(`/products/${id}/stock`, {

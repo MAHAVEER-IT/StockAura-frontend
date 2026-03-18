@@ -20,6 +20,11 @@ const formatDate = (value) => {
   return date.toLocaleDateString('en-IN')
 }
 
+const toCsvCell = (value) => {
+  const normalized = String(value ?? '').replace(/\r?\n|\r/g, ' ').trim()
+  return `"${normalized.replace(/"/g, '""')}"`
+}
+
 export default function EmployeeDashboard({ userEmail, employeeEmail, authToken, onLogout }) {
   const displayEmail = userEmail || employeeEmail
 
@@ -263,6 +268,36 @@ export default function EmployeeDashboard({ userEmail, employeeEmail, authToken,
     })
   }
 
+  const handleExportActivityCsv = () => {
+    if (!inventoryLogs.length) {
+      return
+    }
+
+    const headers = ['Time', 'Product', 'Barcode', 'Action', 'Quantity', 'User', 'Reason']
+    const rows = inventoryLogs.map((log) => [
+      log.createdAt ? new Date(log.createdAt).toISOString() : '',
+      log.product?.name || 'Unknown',
+      log.product?.barcode || '',
+      log.action || '',
+      log.quantity ?? '',
+      log.performedBy?.email || '',
+      log.reason || '',
+    ])
+
+    const csv = [headers, ...rows].map((row) => row.map(toCsvCell).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+
+    link.href = url
+    link.setAttribute('download', `inventory-activity-${stamp}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }
+
   useEffect(() => {
     loadData()
     return () => {
@@ -485,13 +520,23 @@ export default function EmployeeDashboard({ userEmail, employeeEmail, authToken,
           <article className="option-card">
             <div className="option-header">
               <h2>📊 Recent Activity</h2>
-              <button
-                className="option-toggle"
-                type="button"
-                onClick={() => setShowActivityPanel((prev) => !prev)}
-              >
-                {showActivityPanel ? 'Close' : 'Expand'}
-              </button>
+              <div className="option-header-actions">
+                <button
+                  className="option-toggle"
+                  type="button"
+                  onClick={handleExportActivityCsv}
+                  disabled={inventoryLogs.length === 0}
+                >
+                  Export CSV
+                </button>
+                <button
+                  className="option-toggle"
+                  type="button"
+                  onClick={() => setShowActivityPanel((prev) => !prev)}
+                >
+                  {showActivityPanel ? 'Close' : 'Expand'}
+                </button>
+              </div>
             </div>
             <div
               className={`option-content panel-body ${

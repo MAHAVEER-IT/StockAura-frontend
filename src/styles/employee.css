@@ -27,6 +27,13 @@
   grid-template-columns: 1fr;
 }
 
+.option-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
 .employee-intro h1 {
   margin: 0.9rem 0 0.6rem;
   font-family: 'Space Grotesk', 'Tahoma', sans-serif;
