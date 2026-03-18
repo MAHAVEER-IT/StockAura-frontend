@@ -14,13 +14,8 @@ const ADMIN_CREDENTIALS = {
 function App() {
   const [currentPage, setCurrentPage] = useState('landing')
   const [authError, setAuthError] = useState('')
-<<<<<<< HEAD
   const [authEmail, setAuthEmail] = useState('')
   const [authRole, setAuthRole] = useState('')
-=======
-  const [activeAdmin, setActiveAdmin] = useState('')
-  const [activeEmployee, setActiveEmployee] = useState('')
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
   const [authToken, setAuthToken] = useState('')
   const [employees, setEmployees] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -58,7 +53,6 @@ function App() {
   // Load auth state from localStorage on mount
   useEffect(() => {
     const savedToken = localStorage.getItem('authToken')
-<<<<<<< HEAD
     const savedEmail = localStorage.getItem('authEmail')
     const savedRole = localStorage.getItem('authRole')
 
@@ -77,25 +71,6 @@ function App() {
       } else {
         setCurrentPage('employee-dashboard')
       }
-=======
-    const savedRole = localStorage.getItem('activeRole')
-    const savedEmail = localStorage.getItem('activeEmail')
-    const savedAdmin = localStorage.getItem('activeAdmin')
-
-    if (savedToken && savedRole === 'admin' && (savedEmail || savedAdmin)) {
-      setAuthToken(savedToken)
-      setActiveAdmin(savedEmail || savedAdmin)
-      setCurrentPage('admin-dashboard')
-      // Load users with the saved token
-      loadUsers(savedToken).catch(() => {
-        // If token is invalid, clear and redirect to login
-        handleLogout()
-      })
-    } else if (savedToken && savedRole === 'employee' && savedEmail) {
-      setAuthToken(savedToken)
-      setActiveEmployee(savedEmail)
-      setCurrentPage('employee-dashboard')
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
     }
     setIsLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,10 +88,6 @@ function App() {
 
     const normalizedEmail = email.trim().toLowerCase()
     const normalizedPassword = password.trim()
-<<<<<<< HEAD
-=======
-    const apiRole = role === 'ADMIN' ? 'admin' : 'user'
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
 
     if (!normalizedEmail || !normalizedPassword) {
       return
@@ -168,7 +139,6 @@ function App() {
         return
       }
 
-<<<<<<< HEAD
       const token = response.token
       const emailFromApi = response?.user?.email || normalizedEmail
       const roleFromApi = backendRole || (isAdminLogin ? 'admin' : 'user')
@@ -191,32 +161,6 @@ function App() {
         setCurrentPage('employee-dashboard')
       }
       return
-=======
-      if (isAdminLogin) {
-        setAuthToken(response.token)
-        setActiveAdmin(response.user.email)
-        setActiveEmployee('')
-        // Save to localStorage for persistence
-        localStorage.setItem('authToken', response.token)
-        localStorage.setItem('activeAdmin', response.user.email)
-        localStorage.setItem('activeRole', 'admin')
-        localStorage.setItem('activeEmail', response.user.email)
-        await loadUsers(response.token)
-        setAuthError('')
-        setCurrentPage('admin-dashboard')
-        return
-      }
-
-      setAuthToken(response.token)
-      setActiveEmployee(response.user.email)
-      setActiveAdmin('')
-      localStorage.setItem('authToken', response.token)
-      localStorage.setItem('activeRole', 'employee')
-      localStorage.setItem('activeEmail', response.user.email)
-      localStorage.removeItem('activeAdmin')
-      setAuthError('')
-      setCurrentPage('employee-dashboard')
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
     } catch (error) {
       if (
         normalizedEmail === ADMIN_CREDENTIALS.email &&
@@ -231,24 +175,6 @@ function App() {
       setAuthError(error.message)
     }
   }
-
-<<<<<<< HEAD
-=======
-  const handleLogout = () => {
-    setCurrentPage('login')
-    setActiveAdmin('')
-    setActiveEmployee('')
-    setAuthToken('')
-    setEmployees([])
-    setAuthError('')
-    // Clear localStorage on logout
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('activeAdmin')
-    localStorage.removeItem('activeRole')
-    localStorage.removeItem('activeEmail')
-  }
-
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
   if (isLoading) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
   }
@@ -273,11 +199,7 @@ function App() {
   if (currentPage === 'employee-dashboard') {
     return (
       <EmployeeDashboard
-<<<<<<< HEAD
         userEmail={authEmail || 'employee@stockaura.com'}
-=======
-        employeeEmail={activeEmployee}
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
         authToken={authToken}
         onLogout={handleLogout}
       />

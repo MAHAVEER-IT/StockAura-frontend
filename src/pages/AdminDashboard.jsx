@@ -430,27 +430,6 @@ export default function AdminDashboard({
               </button>
             </div>
 
-<<<<<<< HEAD
-            {showProductFeature ? (
-              <div className="option-content product-option-content">
-                <ProductForm
-                  editingProduct={editingProduct}
-                  onSave={handleSaveProduct}
-                  onCancelEdit={handleCancelEdit}
-                  categories={categories}
-                  suppliers={suppliers}
-                />
-                <ProductList
-                  products={products}
-                  onEdit={handleEditProduct}
-                  onDelete={handleDeleteProduct}
-                  onUpdateStock={handleUpdateStock}
-                />
-              </div>
-            ) : (
-              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
-            )}
-=======
             <div
               className={`option-content product-option-content panel-body ${
                 showProductFeature ? 'panel-expanded' : 'panel-collapsed'
@@ -468,6 +447,7 @@ export default function AdminDashboard({
                 products={products}
                 onEdit={handleEditProduct}
                 onDelete={handleDeleteProduct}
+                onUpdateStock={handleUpdateStock}
               />
             </div>
             <p
@@ -475,7 +455,6 @@ export default function AdminDashboard({
             >
               Panel collapsed. Click Expand to open.
             </p>
->>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
           </article>
         </section>
 
