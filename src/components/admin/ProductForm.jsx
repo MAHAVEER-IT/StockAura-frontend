@@ -5,7 +5,6 @@ const defaultProduct = {
   name: '',
   description: '',
   price: '',
-  barcode: '',
   quantity: '100',
   lowStockThreshold: '20',
   expiryDate: '',
@@ -26,7 +25,6 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         name: editingProduct.name,
         description: editingProduct.description || '',
         price: String(editingProduct.price),
-        barcode: editingProduct.barcode,
         quantity: String(editingProduct.quantity || 100),
         lowStockThreshold: String(editingProduct.lowStockThreshold || 20),
         expiryDate: editingProduct.expiryDate || editingProduct.expiry || '',
@@ -162,19 +160,6 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         </div>
 
         <div className="field-group">
-          <label htmlFor="product-barcode">Barcode</label>
-          <input
-            id="product-barcode"
-            name="barcode"
-            type="text"
-            placeholder="Enter barcode"
-            value={form.barcode}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="field-group">
           <label htmlFor="product-expiryDate">Expiry Date</label>
           <input
             id="product-expiryDate"
@@ -223,6 +208,8 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
         </div>
 
         <div className="field-group field-group-wide">
+          <p className="file-note">Barcode will be auto-generated when you create product.</p>
+
           <label htmlFor="product-image">Product Image</label>
           <input
             id="product-image"

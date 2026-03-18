@@ -107,7 +107,32 @@
 }
 
 .option-content {
+  margin-top: 0;
+}
+
+.option-content.panel-body {
+  overflow: hidden;
+  transform-origin: top;
+  transition:
+    max-height 320ms ease,
+    opacity 260ms ease,
+    transform 260ms ease,
+    margin-top 260ms ease;
+}
+
+.option-content.panel-expanded {
+  max-height: 2200px;
+  opacity: 1;
+  transform: translateY(0);
   margin-top: 0.7rem;
+}
+
+.option-content.panel-collapsed {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  margin-top: 0;
+  pointer-events: none;
 }
 
 .employee-option-content,
@@ -122,6 +147,18 @@
   margin: 0.8rem 0 0;
   font-size: 0.9rem;
   color: #5b7181;
+  transition: opacity 220ms ease, transform 220ms ease, max-height 220ms ease;
+  max-height: 48px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.option-collapsed-note.note-hidden {
+  margin-top: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
 }
 
 /* ── Employee ── */

@@ -22,21 +22,37 @@ export default function EmployeeList({ employees, onDelete }) {
         <div className="employee-list-wrap">
           <ul>
             {employees.map((employee) => (
-              <li key={employee.id || employee.email}>
+              <li key={employee.id || employee._id || employee.email}>
                 <div>
                   <p className="employee-email">{employee.email}</p>
                   <p className="employee-role">Role: {employee.role}</p>
                   <p className="employee-pass">Password: *****</p>
                 </div>
                 <div className="employee-row-actions">
-                  <button
-                    className="table-btn danger"
-                    type="button"
-                    onClick={() => handleDelete(employee.id, employee.email)}
-                    disabled={!employee.id || employee.role !== 'EMPLOYEE'}
-                  >
-                    Remove
-                  </button>
+                  {(() => {
+                    const employeeId = employee.id || employee._id
+                    const isAdminRole =
+                      String(employee.role).toUpperCase() === 'ADMIN' ||
+                      String(employee.role).toLowerCase() === 'admin'
+
+                    return (
+                      <button
+                        className="table-btn danger"
+                        type="button"
+                        onClick={() => handleDelete(employeeId, employee.email)}
+                        disabled={!employeeId || isAdminRole}
+                        title={
+                          isAdminRole
+                            ? 'Admin account removal is disabled'
+                            : !employeeId
+                              ? 'User id missing'
+                              : 'Remove staff account'
+                        }
+                      >
+                        Remove
+                      </button>
+                    )
+                  })()}
                 </div>
               </li>
             ))}

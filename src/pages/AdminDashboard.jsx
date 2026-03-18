@@ -194,7 +194,6 @@ export default function AdminDashboard({
       name: payload.name.trim(),
       description: payload.description || '',
       price: Number(payload.price),
-      barcode: payload.barcode.trim(),
       quantity: payload.quantity || '100',
       lowStockThreshold: payload.lowStockThreshold || '20',
       expiryDate: payload.expiryDate,
@@ -207,12 +206,11 @@ export default function AdminDashboard({
       !normalized.name ||
       !Number.isFinite(normalized.price) ||
       normalized.price < 0 ||
-      !normalized.barcode ||
       !normalized.expiryDate ||
       !normalized.category ||
       !normalized.supplier
     ) {
-      setDashboardError('Please fill all required fields: name, price, barcode, expiry date, category, supplier.')
+      setDashboardError('Please fill all required fields: name, price, expiry date, category, supplier.')
       return
     }
 
@@ -225,7 +223,6 @@ export default function AdminDashboard({
       name: normalized.name,
       description: normalized.description,
       price: normalized.price,
-      barcode: normalized.barcode,
       quantity: normalized.quantity,
       lowStockThreshold: normalized.lowStockThreshold,
       expiryDate: normalized.expiryDate,
@@ -368,14 +365,20 @@ export default function AdminDashboard({
               </button>
             </div>
 
-            {showStaffFeature ? (
-              <div className="option-content employee-option-content">
-                <CreateEmployeeForm onCreate={onCreateEmployee} />
-                <EmployeeList employees={employees} onDelete={onDeleteEmployee} />
-              </div>
-            ) : (
-              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
-            )}
+            <div
+              className={`option-content employee-option-content panel-body ${
+                showStaffFeature ? 'panel-expanded' : 'panel-collapsed'
+              }`}
+              aria-hidden={!showStaffFeature}
+            >
+              <CreateEmployeeForm onCreate={onCreateEmployee} />
+              <EmployeeList employees={employees} onDelete={onDeleteEmployee} />
+            </div>
+            <p
+              className={`option-collapsed-note ${showStaffFeature ? 'note-hidden' : 'note-visible'}`}
+            >
+              Panel collapsed. Click Expand to open.
+            </p>
           </article>
         </section>
 
@@ -392,19 +395,25 @@ export default function AdminDashboard({
               </button>
             </div>
 
-            {showCategoryFeature ? (
-              <div className="option-content category-option-content">
-                <CreateCategoryForm onSave={handleCreateCategory} error={categoryError} />
-                <CategoryList
-                  categories={categories}
-                  onEdit={handleEditCategory}
-                  onDelete={handleDeleteCategory}
-                  error={categoryError}
-                />
-              </div>
-            ) : (
-              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
-            )}
+            <div
+              className={`option-content category-option-content panel-body ${
+                showCategoryFeature ? 'panel-expanded' : 'panel-collapsed'
+              }`}
+              aria-hidden={!showCategoryFeature}
+            >
+              <CreateCategoryForm onSave={handleCreateCategory} error={categoryError} />
+              <CategoryList
+                categories={categories}
+                onEdit={handleEditCategory}
+                onDelete={handleDeleteCategory}
+                error={categoryError}
+              />
+            </div>
+            <p
+              className={`option-collapsed-note ${showCategoryFeature ? 'note-hidden' : 'note-visible'}`}
+            >
+              Panel collapsed. Click Expand to open.
+            </p>
           </article>
         </section>
 
@@ -421,6 +430,7 @@ export default function AdminDashboard({
               </button>
             </div>
 
+<<<<<<< HEAD
             {showProductFeature ? (
               <div className="option-content product-option-content">
                 <ProductForm
@@ -440,6 +450,32 @@ export default function AdminDashboard({
             ) : (
               <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
             )}
+=======
+            <div
+              className={`option-content product-option-content panel-body ${
+                showProductFeature ? 'panel-expanded' : 'panel-collapsed'
+              }`}
+              aria-hidden={!showProductFeature}
+            >
+              <ProductForm
+                editingProduct={editingProduct}
+                onSave={handleSaveProduct}
+                onCancelEdit={handleCancelEdit}
+                categories={categories}
+                suppliers={suppliers}
+              />
+              <ProductList
+                products={products}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteProduct}
+              />
+            </div>
+            <p
+              className={`option-collapsed-note ${showProductFeature ? 'note-hidden' : 'note-visible'}`}
+            >
+              Panel collapsed. Click Expand to open.
+            </p>
+>>>>>>> 84691adcb99694212a6726b20a7b3842c71b3a0a
           </article>
         </section>
 
@@ -456,19 +492,25 @@ export default function AdminDashboard({
               </button>
             </div>
 
-            {showSupplierFeature ? (
-              <div className="option-content supplier-option-content">
-                <SupplierManagement
-                  suppliers={suppliers}
-                  onCreate={handleCreateSupplier}
-                  onEdit={handleEditSupplier}
-                  onDelete={handleDeleteSupplier}
-                  error={supplierError}
-                />
-              </div>
-            ) : (
-              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
-            )}
+            <div
+              className={`option-content supplier-option-content panel-body ${
+                showSupplierFeature ? 'panel-expanded' : 'panel-collapsed'
+              }`}
+              aria-hidden={!showSupplierFeature}
+            >
+              <SupplierManagement
+                suppliers={suppliers}
+                onCreate={handleCreateSupplier}
+                onEdit={handleEditSupplier}
+                onDelete={handleDeleteSupplier}
+                error={supplierError}
+              />
+            </div>
+            <p
+              className={`option-collapsed-note ${showSupplierFeature ? 'note-hidden' : 'note-visible'}`}
+            >
+              Panel collapsed. Click Expand to open.
+            </p>
           </article>
         </section>
 
