@@ -72,6 +72,35 @@ export function getSuppliers(token) {
   })
 }
 
+export function createSupplier(token, payload) {
+  return request('/suppliers', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function updateSupplier(token, id, payload) {
+  return request(`/suppliers/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteSupplier(token, id) {
+  return request(`/suppliers/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
 export function createProduct(token, payload) {
   const formData = new FormData()
   formData.append('name', payload.name)
@@ -166,5 +195,59 @@ export function deleteCategory(token, id) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  })
+}
+
+export function getInventoryLogs(token) {
+  return request('/inventory-logs', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export function getLowStockProducts(token) {
+  return request('/products/low-stock', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export function createRestockRequest(token, payload) {
+  return request('/restock-requests', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function listRestockRequests(token) {
+  return request('/restock-requests', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export function receiveRestockRequest(token, id, payload) {
+  return request(`/restock-requests/${id}/receive`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload || {}),
+  })
+}
+
+export function updateStock(token, id, payload) {
+  return request(`/products/${id}/stock`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
   })
 }

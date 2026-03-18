@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react'
 
 const defaultProduct = {
@@ -16,9 +17,11 @@ const defaultProduct = {
 
 export default function ProductForm({ editingProduct, onSave, onCancelEdit, categories = [], suppliers = [] }) {
   const [form, setForm] = useState(defaultProduct)
+  const [didAutofillDefaults, setDidAutofillDefaults] = useState(false)
 
   useEffect(() => {
     if (editingProduct) {
+      setDidAutofillDefaults(true)
       setForm({
         name: editingProduct.name,
         description: editingProduct.description || '',
@@ -35,27 +38,27 @@ export default function ProductForm({ editingProduct, onSave, onCancelEdit, cate
       return
     }
 
+    setDidAutofillDefaults(false)
     setForm(defaultProduct)
   }, [editingProduct])
 
-
   useEffect(() => {
-    if (categories.length > 0 && !form.category && !editingProduct) {
-      setForm((prev) => ({
-        ...prev,
-        category: categories[0]._id,
-      }))
+    if (editingProduct) {
+      return
     }
-  }, [categories, editingProduct, form.category])
-
-  useEffect(() => {
-    if (suppliers.length > 0 && !form.supplier && !editingProduct) {
-      setForm((prev) => ({
-        ...prev,
-        supplier: suppliers[0]._id,
-      }))
+    if (didAutofillDefaults) {
+      return
     }
-  }, [suppliers, editingProduct, form.supplier])
+    if (categories.length === 0 && suppliers.length === 0) {
+      return
+    }
+    setDidAutofillDefaults(true)
+    setForm((prev) => ({
+      ...prev,
+      category: prev.category || categories[0]?._id || '',
+      supplier: prev.supplier || suppliers[0]?._id || '',
+    }))
+  }, [categories, suppliers, editingProduct, didAutofillDefaults])
 
   const handleChange = (event) => {
     const { name, value } = event.target

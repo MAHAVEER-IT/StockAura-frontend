@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react'
 import CreateEmployeeForm from '../components/admin/CreateEmployeeForm'
 import EmployeeList from '../components/admin/EmployeeList'
@@ -5,16 +6,25 @@ import CreateCategoryForm from '../components/admin/CreateCategoryForm'
 import CategoryList from '../components/admin/CategoryList'
 import ProductForm from '../components/admin/ProductForm'
 import ProductList from '../components/admin/ProductList'
+import LowStockAlerts from '../components/admin/LowStockAlerts'
+import InventoryLogList from '../components/admin/InventoryLogList'
 import {
   createProduct,
   deleteProduct,
   getProducts,
   updateProduct,
   getSuppliers,
+  createSupplier,
+  updateSupplier,
+  deleteSupplier,
   createCategory,
   deleteCategory,
   getCategories,
   updateCategory,
+  getInventoryLogs,
+  getLowStockProducts,
+  createRestockRequest,
+  updateStock,
 } from '../services/api'
 import SupplierManagement from '../components/admin/SupplierManagement'
 
@@ -30,13 +40,17 @@ export default function AdminDashboard({
   const [showCategoryFeature, setShowCategoryFeature] = useState(false)
   const [showProductFeature, setShowProductFeature] = useState(false)
   const [showSupplierFeature, setShowSupplierFeature] = useState(false)
+  const [showInventoryLogFeature, setShowInventoryLogFeature] = useState(false)
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
   const [suppliers, setSuppliers] = useState([])
+  const [inventoryLogs, setInventoryLogs] = useState([])
+  const [lowStockProducts, setLowStockProducts] = useState([])
   const [supplierError, setSupplierError] = useState('')
   const [editingProduct, setEditingProduct] = useState(null)
   const [dashboardError, setDashboardError] = useState('')
   const [categoryError, setCategoryError] = useState('')
+  const [restockMessage, setRestockMessage] = useState('')
 
   const mapProduct = (product) => ({
     id: product._id,
@@ -95,6 +109,46 @@ export default function AdminDashboard({
     }
   }
 
+  const loadInventoryLogs = async () => {
+    if (!authToken) return
+    try {
+      const response = await getInventoryLogs(authToken)
+      setInventoryLogs(response.logs || [])
+    } catch (error) {
+      console.error('Failed to load logs', error)
+    }
+  }
+
+  const loadLowStock = async () => {
+    if (!authToken) return
+    try {
+      const response = await getLowStockProducts(authToken)
+      setLowStockProducts((response.products || []).map(mapProduct))
+    } catch (error) {
+      console.error('Failed to load low stock', error)
+    }
+  }
+
+  const handleRequestRestock = async (product) => {
+    if (!authToken) return
+    try {
+      setRestockMessage('')
+      const missing = Math.max(
+        1,
+        Number(product.lowStockThreshold || 0) - Number(product.quantity || 0) + 10,
+      )
+      await createRestockRequest(authToken, {
+        productId: product.id,
+        requestedQty: missing,
+        notes: `Auto-suggested restock based on threshold (${product.lowStockThreshold})`,
+        sendEmail: true,
+      })
+      setRestockMessage(`Restock email sent for ${product.name}.`)
+    } catch (error) {
+      setRestockMessage(error.message)
+    }
+  }
+
   const handleCreateSupplier = async (payload) => {
     try {
       const response = await createSupplier(authToken, payload)
@@ -131,6 +185,8 @@ export default function AdminDashboard({
     loadProducts()
     loadCategories()
     loadSuppliers()
+    loadInventoryLogs()
+    loadLowStock()
   }, [authToken])
 
   const handleSaveProduct = async (payload) => {
@@ -220,6 +276,20 @@ export default function AdminDashboard({
     }
   }
 
+  const handleUpdateStock = async (productId, payload) => {
+    try {
+      await updateStock(authToken, productId, payload)
+      await Promise.all([
+        loadProducts(),
+        loadInventoryLogs(),
+        loadLowStock()
+      ])
+      setDashboardError('')
+    } catch (error) {
+      setDashboardError(error.message)
+    }
+  }
+
   const handleCancelEdit = () => {
     setEditingProduct(null)
   }
@@ -278,6 +348,11 @@ export default function AdminDashboard({
             expiry.
           </p>
           {dashboardError ? <p className="dashboard-error">{dashboardError}</p> : null}
+        </section>
+
+        <section className="dashboard-summary">
+          <LowStockAlerts products={lowStockProducts} onRequestRestock={handleRequestRestock} />
+          {restockMessage ? <p className="dashboard-error">{restockMessage}</p> : null}
         </section>
 
         <section className="dashboard-grid employee-grid">
@@ -359,6 +434,7 @@ export default function AdminDashboard({
                   products={products}
                   onEdit={handleEditProduct}
                   onDelete={handleDeleteProduct}
+                  onUpdateStock={handleUpdateStock}
                 />
               </div>
             ) : (
@@ -389,6 +465,29 @@ export default function AdminDashboard({
                   onDelete={handleDeleteSupplier}
                   error={supplierError}
                 />
+              </div>
+            ) : (
+              <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>
+            )}
+          </article>
+        </section>
+
+        <section className="dashboard-grid log-grid">
+          <article className="option-card" aria-label="Inventory logs feature">
+            <div className="option-header">
+              <h2>Inventory Activity Feature</h2>
+              <button
+                className="option-toggle"
+                type="button"
+                onClick={() => setShowInventoryLogFeature((prev) => !prev)}
+              >
+                {showInventoryLogFeature ? 'Close' : 'Expand'}
+              </button>
+            </div>
+
+            {showInventoryLogFeature ? (
+              <div className="option-content log-option-content">
+                <InventoryLogList logs={inventoryLogs} />
               </div>
             ) : (
               <p className="option-collapsed-note">Panel collapsed. Click Expand to open.</p>

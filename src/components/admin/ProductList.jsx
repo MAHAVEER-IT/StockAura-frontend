@@ -5,17 +5,21 @@ const money = new Intl.NumberFormat('en-IN', {
   currency: 'INR',
 })
 
-export default function ProductList({ products, onEdit, onDelete }) {
+export default function ProductList({ products, onEdit, onDelete, onUpdateStock }) {
+  const employeeMode = !onEdit && !onDelete
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [priceSortOrder, setPriceSortOrder] = useState('none')
   const [expirySortOrder, setExpirySortOrder] = useState('none')
+  const [stockActionId, setStockActionId] = useState(null)
+  const [stockAdjustment, setStockAdjustment] = useState({ quantity: 1, reason: '' })
 
   const normalizedProducts = useMemo(
     () =>
       products.map((product) => ({
         ...product,
         categoryLabel: product.category?.name || product.category || 'N/A',
+        isLowStock: product.quantity <= product.lowStockThreshold,
       })),
     [products],
   )
@@ -72,17 +76,34 @@ export default function ProductList({ products, onEdit, onDelete }) {
     setExpirySortOrder('none')
   }
 
-  return (
-    <section className="product-list" aria-label="Product list management">
-      <h3>Products</h3>
+  const handleQuickStock = async (id, action) => {
+    if (!onUpdateStock) return
+    await onUpdateStock(id, {
+      action,
+      quantity: Number(stockAdjustment.quantity),
+      reason: stockAdjustment.reason || `Quick ${action}`,
+    })
+    setStockActionId(null)
+    setStockAdjustment({ quantity: 1, reason: '' })
+  }
 
-      <div className="product-filter-bar" aria-label="Product filters">
-        <div className="product-filter-field">
-          <label htmlFor="product-search">Search</label>
+  return (
+    <section className="product-list data-grid-container" aria-label="Product list management">
+      <div className="list-header-flex">
+        <h3>Inventory Data Grid</h3>
+        <div className="quick-stats">
+          <span className="stat-label">Total Items: {products.length}</span>
+          <span className="stat-label low-stock">Low Stock: {products.filter(p => (p.quantity || 0) <= (p.lowStockThreshold || 0)).length}</span>
+        </div>
+      </div>
+
+      <div className="product-filter-bar grid-filters" aria-label="Product filters">
+        <div className="product-filter-field search-field">
+          <label htmlFor="product-search">Search Inventory</label>
           <input
             id="product-search"
             type="text"
-            placeholder="Search by name or barcode"
+            placeholder="Name, SKU, or Barcode..."
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
           />
@@ -106,104 +127,114 @@ export default function ProductList({ products, onEdit, onDelete }) {
           </select>
         </div>
 
-        <button className="table-btn" type="button" onClick={handleResetFilters}>
-          Reset Filters
+        <button className="reset-btn" type="button" onClick={handleResetFilters}>
+          Reset
         </button>
       </div>
 
       {products.length === 0 ? (
-        <p className="empty-state">No products yet. Add your first product.</p>
+        <div className="empty-grid-state">
+          <p>No products available in the ledger.</p>
+        </div>
       ) : filteredProducts.length === 0 ? (
-        <p className="empty-state">No products match the selected filters.</p>
+        <div className="empty-grid-state">
+          <p>No matching records found.</p>
+        </div>
       ) : (
-        <div className="product-table-wrap">
-          <table>
+        <div className="product-table-wrap grid-table-wrap">
+          <table className="data-grid">
             <thead>
               <tr>
-                <th>Image</th>
-                <th>Name</th>
+                <th className="sticky-col">Product</th>
                 <th>Category</th>
                 <th>
-                  <div className="price-header-wrap">
+                  <div className="sort-header">
                     <span>Price</span>
-                    <div className="price-sort-controls" aria-label="Sort by price">
-                      <button
-                        className={`sort-arrow ${priceSortOrder === 'asc' ? 'active' : ''}`}
-                        type="button"
-                        onClick={() => setPriceSortOrder('asc')}
-                        aria-label="Sort price ascending"
-                      >
-                        ▲
-                      </button>
-                      <button
-                        className={`sort-arrow ${priceSortOrder === 'desc' ? 'active' : ''}`}
-                        type="button"
-                        onClick={() => setPriceSortOrder('desc')}
-                        aria-label="Sort price descending"
-                      >
-                        ▼
-                      </button>
-                    </div>
+                    <button className={`sort-btn ${priceSortOrder !== 'none' ? 'active' : ''}`} onClick={() => setPriceSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}>
+                      {priceSortOrder === 'desc' ? '▼' : '▲'}
+                    </button>
                   </div>
                 </th>
-                <th>Quantity</th>
+                <th>Stock Level</th>
                 <th>Barcode</th>
                 <th>
-                  <div className="price-header-wrap">
+                  <div className="sort-header">
                     <span>Expiry</span>
-                    <div className="price-sort-controls" aria-label="Sort by expiry">
-                      <button
-                        className={`sort-arrow ${expirySortOrder === 'asc' ? 'active' : ''}`}
-                        type="button"
-                        onClick={() => setExpirySortOrder('asc')}
-                        aria-label="Sort expiry ascending"
-                      >
-                        ▲
-                      </button>
-                      <button
-                        className={`sort-arrow ${expirySortOrder === 'desc' ? 'active' : ''}`}
-                        type="button"
-                        onClick={() => setExpirySortOrder('desc')}
-                        aria-label="Sort expiry descending"
-                      >
-                        ▼
-                      </button>
-                    </div>
+                    <button className={`sort-btn ${expirySortOrder !== 'none' ? 'active' : ''}`} onClick={() => setExpirySortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}>
+                      {expirySortOrder === 'desc' ? '▼' : '▲'}
+                    </button>
                   </div>
                 </th>
-                <th>Actions</th>
+                {employeeMode ? null : <th className="action-col">Manage</th>}
               </tr>
             </thead>
             <tbody>
               {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <img className="product-thumb" src={product.image} alt={product.name} />
-                  </td>
-                  <td>{product.name}</td>
-                  <td>{product.categoryLabel}</td>
-                  <td>{money.format(product.price)}</td>
-                  <td>{product.quantity}</td>
-                  <td>{product.barcode}</td>
-                  <td>{product.expiry}</td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        className="table-btn"
-                        type="button"
-                        onClick={() => onEdit(product)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="table-btn danger"
-                        type="button"
-                        onClick={() => onDelete(product.id)}
-                      >
-                        Delete
-                      </button>
+                <tr key={product.id} className={product.isLowStock ? 'row-low-stock' : ''}>
+                  <td className="sticky-col">
+                    <div className="product-cell">
+                      <img className="product-thumb" src={product.image} alt="" />
+                      <div className="product-meta">
+                        <span className="product-name">{product.name}</span>
+                        {product.isLowStock && <span className="low-stock-badge">Low Stock</span>}
+                      </div>
                     </div>
                   </td>
+                  <td><span className="category-tag">{product.categoryLabel}</span></td>
+                  <td className="price-cell">{money.format(product.price)}</td>
+                  <td>
+                    <div className="stock-cell">
+                      <span className={`stock-qty ${product.isLowStock ? 'critical' : ''}`}>
+                        {product.quantity}
+                      </span>
+                      <button 
+                        className="quick-adjust-btn" 
+                        onClick={() => setStockActionId(stockActionId === product.id ? null : product.id)}
+                      >
+                        ±
+                      </button>
+                      {stockActionId === product.id && (
+                        <div className="stock-popover">
+                          <input 
+                            type="number" 
+                            min="1" 
+                            value={stockAdjustment.quantity}
+                            onChange={(e) => setStockAdjustment(prev => ({ ...prev, quantity: e.target.value }))}
+                          />
+                          <div className="popover-actions">
+                            <button className="pop-btn add" onClick={() => handleQuickStock(product.id, 'added')}>Add</button>
+                            <button className="pop-btn sub" onClick={() => handleQuickStock(product.id, 'sold')}>Sold</button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="barcode-cell"><code>{product.barcode}</code></td>
+                  <td>{product.expiry || 'N/A'}</td>
+                  {employeeMode ? null : (
+                    <td className="action-col">
+                      <div className="row-actions">
+                        <button
+                          className="row-action-btn"
+                          type="button"
+                          onClick={() => onEdit && onEdit(product)}
+                          title="Edit"
+                          disabled={!onEdit}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="row-action-btn danger"
+                          type="button"
+                          onClick={() => onDelete && onDelete(product.id)}
+                          title="Delete"
+                          disabled={!onDelete}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

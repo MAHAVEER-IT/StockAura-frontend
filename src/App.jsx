@@ -3,6 +3,7 @@ import './App.css'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import AdminDashboard from './pages/AdminDashboard'
+import EmployeeDashboard from './pages/EmployeeDashboard'
 import { deleteUser, getUsers, loginRequest, registerUser } from './services/api'
 
 const ADMIN_CREDENTIALS = {
@@ -13,40 +14,67 @@ const ADMIN_CREDENTIALS = {
 function App() {
   const [currentPage, setCurrentPage] = useState('landing')
   const [authError, setAuthError] = useState('')
-  const [activeAdmin, setActiveAdmin] = useState('')
+  const [authEmail, setAuthEmail] = useState('')
+  const [authRole, setAuthRole] = useState('')
   const [authToken, setAuthToken] = useState('')
   const [employees, setEmployees] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const toUiRole = (apiRole) => (apiRole === 'admin' ? 'ADMIN' : 'EMPLOYEE')
+
+  const handleLogout = () => {
+    setCurrentPage('login')
+    setAuthEmail('')
+    setAuthRole('')
+    setAuthToken('')
+    setEmployees([])
+    setAuthError('')
+    // Clear localStorage on logout
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authEmail')
+    localStorage.removeItem('authRole')
+  }
+
+  const loadUsers = async (token) => {
+    try {
+      const response = await getUsers(token)
+      const mapped = (response.users || []).map((user) => ({
+        id: user._id,
+        email: user.email,
+        role: toUiRole(user.role),
+      }))
+      setEmployees(mapped)
+    } catch (error) {
+      console.warn('Employee list load failed (admin-only):', error.message)
+      setEmployees([])
+    }
+  }
+
   // Load auth state from localStorage on mount
   useEffect(() => {
     const savedToken = localStorage.getItem('authToken')
-    const savedAdmin = localStorage.getItem('activeAdmin')
+    const savedEmail = localStorage.getItem('authEmail')
+    const savedRole = localStorage.getItem('authRole')
 
-    if (savedToken && savedAdmin) {
+    if (savedToken && savedEmail && savedRole) {
       setAuthToken(savedToken)
-      setActiveAdmin(savedAdmin)
-      setCurrentPage('admin-dashboard')
-      // Load users with the saved token
-      loadUsers(savedToken).catch(() => {
-        // If token is invalid, clear and redirect to login
-        handleLogout()
-      })
+      setAuthEmail(savedEmail)
+      setAuthRole(savedRole)
+
+      if (savedRole === 'admin') {
+        setCurrentPage('admin-dashboard')
+        // Load users with the saved token (admin-only)
+        loadUsers(savedToken).catch(() => {
+          // If token is invalid, clear and redirect to login
+          handleLogout()
+        })
+      } else {
+        setCurrentPage('employee-dashboard')
+      }
     }
     setIsLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const toUiRole = (apiRole) => (apiRole === 'admin' ? 'ADMIN' : 'EMPLOYEE')
-
-  const loadUsers = async (token) => {
-    const response = await getUsers(token)
-    const mapped = (response.users || []).map((user) => ({
-      id: user._id,
-      email: user.email,
-      role: toUiRole(user.role),
-    }))
-    setEmployees(mapped)
-  }
 
   const handleOpenLogin = () => {
     setAuthError('')
@@ -60,7 +88,6 @@ function App() {
 
     const normalizedEmail = email.trim().toLowerCase()
     const normalizedPassword = password.trim()
-    const apiRole = role === 'ADMIN' ? 'admin' : 'employee'
 
     if (!normalizedEmail || !normalizedPassword) {
       return
@@ -70,7 +97,7 @@ function App() {
       await registerUser({
         email: normalizedEmail,
         password: normalizedPassword,
-        role: apiRole,
+        role, // 'ADMIN' | 'EMPLOYEE' (mapped in api layer)
       })
       await loadUsers(authToken)
       setAuthError('')
@@ -112,19 +139,28 @@ function App() {
         return
       }
 
-      if (isAdminLogin) {
-        setAuthToken(response.token)
-        setActiveAdmin(response.user.email)
-        // Save to localStorage for persistence
-        localStorage.setItem('authToken', response.token)
-        localStorage.setItem('activeAdmin', response.user.email)
-        await loadUsers(response.token)
-        setAuthError('')
-        setCurrentPage('admin-dashboard')
-        return
-      }
+      const token = response.token
+      const emailFromApi = response?.user?.email || normalizedEmail
+      const roleFromApi = backendRole || (isAdminLogin ? 'admin' : 'user')
 
-      setAuthError('Employee login is connected. Employee dashboard will be added next.')
+      setAuthToken(token)
+      setAuthEmail(emailFromApi)
+      setAuthRole(roleFromApi)
+
+      localStorage.setItem('authToken', token)
+      localStorage.setItem('authEmail', emailFromApi)
+      localStorage.setItem('authRole', roleFromApi)
+
+      setAuthError('')
+
+      if (roleFromApi === 'admin') {
+        await loadUsers(token)
+        setCurrentPage('admin-dashboard')
+      } else {
+        setEmployees([])
+        setCurrentPage('employee-dashboard')
+      }
+      return
     } catch (error) {
       if (
         normalizedEmail === ADMIN_CREDENTIALS.email &&
@@ -140,29 +176,32 @@ function App() {
     }
   }
 
-  const handleLogout = () => {
-    setCurrentPage('login')
-    setActiveAdmin('')
-    setAuthToken('')
-    setEmployees([])
-    setAuthError('')
-    // Clear localStorage on logout
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('activeAdmin')
-  }
-
   if (isLoading) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
   }
 
   if (currentPage === 'admin-dashboard') {
+    if (authRole && authRole !== 'admin') {
+      handleLogout()
+      return null
+    }
     return (
       <AdminDashboard
-        adminEmail={activeAdmin || ADMIN_CREDENTIALS.email}
+        adminEmail={authEmail || ADMIN_CREDENTIALS.email}
         authToken={authToken}
         employees={employees}
         onCreateEmployee={handleCreateEmployee}
         onDeleteEmployee={handleDeleteEmployee}
+        onLogout={handleLogout}
+      />
+    )
+  }
+
+  if (currentPage === 'employee-dashboard') {
+    return (
+      <EmployeeDashboard
+        userEmail={authEmail || 'employee@stockaura.com'}
+        authToken={authToken}
         onLogout={handleLogout}
       />
     )
